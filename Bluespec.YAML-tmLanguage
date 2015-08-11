@@ -1,0 +1,109 @@
+# [PackageDev] target_format: plist, ext: tmLanguage
+name: Bluespec
+scopeName: source.bluespec
+fileTypes: [bsv]
+uuid: 15b0b35d-eaef-423b-b588-07b2d5976324
+
+patterns:
+- match: (#|@)
+  name: keyword.other.bluespec
+
+- name: meta.import.bluespec
+  match: ^\s*(import)\s+(.*)$
+  captures:
+    '1':
+      name: keyword.other.bluespec
+    '2':
+      name: entity.name.type.import.bluespec
+
+- include: '#all-types'
+- match: \b(Action|ActionValue|BVI|C|CF|E|SB|SBR|action|endaction|actionvalue|endactionvalue|ancestor|begin|bit|case|endcase|clocked_by|default|default_clock|default_reset|dependencies|deriving|determines|e|else|enable|end|enum|export|for|function|endfunction|if|ifc_inout|inout|input_clock|input_reset|instance|endinstance|interface|endinterface|let|match|matches|method|endmethod|module|endmodule|numeric|output_clock|output_reset|package|endpackage|parameter|path|port|provisos|reset_by|return|rule|endrule|rules|endrules|same_family|schedule|struct|tagged|type|typeclass|endtypeclass|typedef|union|valueOf|valueof|void|while)\b
+  name: keyword.other.bluespec
+
+- include: '#comments'
+
+- name: keyword.control.bluespec
+  match: \b(if|else|begin|end|function|endfunction|endmodule)\b
+
+- match: (==|!=|<=|>=|<|>)
+  name: keyword.operator.comparison.bluespec
+- match: (\-|\+|\*|\/|%|=)
+  name: keyword.operator.arithmetic.bluespec
+- match: (!|&&|\|\|)
+  name: keyword.operator.logical.bluespec
+- match: (&|\||\^|~\^|\^~|~|<<|>>|\?|:|~&|~\|)
+  name: keyword.operator.bitwise.bluespec
+- match: \b(pack|unpack)\b
+  name: keyword.operator.other.bluespec
+- match: (\b\d+)?'([bB]\s*[0-1_xXzZ?]+|[oO]\s*[0-7_xXzZ?]+|[dD]\s*[0-9_xXzZ?]+|[hH]\s*[0-9a-fA-F_xXzZ?]+)((e|E)(\+|-)?[0-9]+)?\b
+  name: constant.numeric.bluespec
+
+- include: '#strings'
+- include: '#illegal-verilog'
+repository:
+  all-types:
+    patterns:
+    - include: '#storage-datatype-bluespec'
+    - include: '#storage-typeclass-bluespec'
+  comments:
+    patterns:
+    - begin: /\*
+      captures:
+        '0':
+          name: punctuation.definition.comment.bluespec
+      end: \*/
+      name: comment.block.bluespec
+    - captures:
+        '1':
+          name: punctuation.definition.comment.bluespec
+      match: (//).*$\n?
+      name: comment.line.double-slash.bluespec
+  storage-datatype-bluespec:
+    match: \b(Bit|bit|UInt|Int|int|Integer|Bool|Real|real|String|FIFO|FIFOF|Fmt|Void|void|Maybe|Ordering|Tuple[2345678]|Clock|Reset|Inout|Action|ActionValue|Rules|Reg|Wire|RWire|BypassWire|DWire|PulseWire|ReadOnly|WriteOnly)\b
+    name: storage.type.bluespec
+  storage-typeclass-bluespec:
+    patterns:
+    - match: \b(Bits|Eq|Literal|RealLiteral|SizedLiteral|Arith|Ord|Bounded|Bitwise|BitReduction|BitExtend|SaturatingArith|Alias|NumAlias)\b
+      name: storage.type.bluespec
+    - match: \b(Add|Mul|Div|Max|Min|Log|TAdd|TSub|TMul|TDiv|TLog|TExp|TMax|TMin)\b
+      name: storage.type.bluespec
+  strings:
+    patterns:
+    - begin: '"'
+      beginCaptures:
+        '0':
+          name: punctuation.definition.string.begin.verilog
+      end: '"'
+      endCaptures:
+        '0':
+          name: punctuation.definition.string.end.verilog
+      name: string.quoted.double.verilog
+      patterns:
+      - match: \\.
+        name: constant.character.escape.verilog
+    # - begin: ''''
+    #   beginCaptures:
+    #     '0':
+    #       name: punctuation.definition.string.begin.verilog
+    #   end: ''''
+    #   endCaptures:
+    #     '0':
+    #       name: punctuation.definition.string.end.verilog
+    #   name: string.quoted.single.verilog
+    #   patterns:
+    #   - match: \\.
+    #     name: constant.character.escape.verilog
+  illegal-verilog:
+    patterns:
+    - match: \b(alias|always|always_comb|always_ff|always_latch|and|assert|assert_strobe|assign|assume|automatic)\b
+      name: invalid.illegal.verilog-keywords.bluespec
+    - match: \b(bind|bins|binsof|break|buf|bufif0|bufif1|byte|casex|casez|cell|chandle|class|endclass|clocking|endclocking|cmos|config|endconfig|const|constraint|context|continue|cover|covergroup|endgroup|coverpoint|cross)\b
+      name: invalid.illegal.verilog-keywords.bluespec
+    - match: \b(deassign|defparam|design|disable|dist|do|edge|event|expect|extends|extern|final|first_match|force|foreach|forever|fork|forkjoin|generate|endgenerate|genvar|highz0|highz1|iff|ifnone|ignore_bins|illegal_bins|incdir|include|initial|input|inside|int|integer|intersect)\b
+      name: invalid.illegal.verilog-keywords.bluespec
+    - match: \b(join|join_any|join_none|large|liblist|library|local|localparam|logic|longint|macromodule|medium|medium|modport|nand|negedge|new|nmos|nor|noshowcancelled|not|notif0|notif1|null|or|output|packed|pmos|posedge|primitive|endprimitive|priority|program|endprogram|property|endproperty|protected|pull0|pull1|pulldown|pullup|pulsestyle_onevent|pulsestyle_ondetect|pure)\b
+      name: invalid.illegal.verilog-keywords.bluespec
+    - match: \b(rand|randc|randcase|randsequence|rcmos|real|realtime|ref|reg|release|repeat|rnmos|rpmos|rtran|rtranif0|rtranif1|scalared|sequence|endsequence|shortint|shortreal|showcancelled|signed|small|solve|specify|endspecify|specparam|static|string|strong0|strong1|super|supply0|supply1)\b
+      name: invalid.illegal.verilog-keywords.bluespec
+    - match: \b(table|endtable|task|endtask|this|throughout|time|timeprecision|timeunit|tran|tranif0|tranif1|tri|tri0|tri1|triand|trior|trireg|unique|unsigned|use|var|vectored|virtual|wait|wait_order|wand|weak0|weak1|wildcard|wire|with|within|wor|xnor|xor)\b
+      name: invalid.illegal.verilog-keywords.bluespec
